@@ -1,12 +1,12 @@
 {
-    "09780470695067": {
+    "0008E5317B449B": {
         "titolo": "RFID Handbook",
         "isbn": "978-0470695067",
         "autore": "Klaus Finkezeller",
         "materiali": "Libro cartaceo, copertina rigida, tag RFID integrato",
         "stato": "Registered"
     },
-    "09788888748368": {
+    "0008E7273C9150": {
         "titolo": "Campi Elettromagnetici",
         "isbn": "978-8888748368",
 		"autore": "Domenico Solimini",
@@ -14,7 +14,7 @@
         "stato": "Registered"
     },
 
-	"09788825510461":{
+	"0008E72377A23D":{
 		"titolo": "Esercizi e temi d'esame di calcolo delle probabilità e statistica",
 		"isbn": "978-8825510461",
 		"autore": "Mario Rosalino Abundo",
