@@ -30,23 +30,24 @@
             margin-bottom: 30px;
         }
 
-	.book-cover {
-		 width: 250px;
-		height: 350px;
-		margin: 0 auto 30px auto;
-    
-		/* Le regole fondamentali per l'immagine */
-		display: block; 
-		object-fit: cover; /* Fa sì che l'immagine riempia il riquadro 250x350 senza deformarsi */
-		border-radius: 6px; /* Mantiene gli angoli leggermente arrotondati */
-    
-		/* Assicuriamoci che non ci siano bordi o sfondi indesiderati */
-		border: none; 
-		background-color: transparent;
-    
-		/* Opzionale: aggiunge un'ombra elegante al libro invece del vecchio bordo */
-		box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-	}
+        .book-cover {
+            width: 250px;
+            height: 350px;
+            margin: 0 auto 30px auto;
+            
+            /* Le regole fondamentali per l'immagine */
+            display: block; 
+            object-fit: cover; 
+            border-radius: 6px; 
+            
+            /* Assicuriamoci che non ci siano bordi o sfondi indesiderati */
+            border: none; 
+            background-color: transparent;
+            
+            /* Opzionale: aggiunge un'ombra elegante al libro */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
         p {
             font-size: 1.3rem;
             line-height: 1.6;
@@ -60,57 +61,81 @@
             font-style: italic;
         }
     </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // 1. Estraiamo il GTIN dall'URL
+            const parametriUrl = new URLSearchParams(window.location.search);
+            const gtinRicevuto = parametriUrl.get('gtin');
+
+            // 2. Troviamo gli elementi nella pagina tramite il loro ID
+            const imgElement = document.getElementById("immagine-dinamica");
+            const titoloElement = document.getElementById("testo-titolo");
+            const autoreElement = document.getElementById("testo-autore");
+
+            if (gtinRicevuto) {
+                
+                // --- GESTIONE IMMAGINE ---
+                const nomeFileImmagine = "img/" + gtinRicevuto + ".jpeg";
+
+                imgElement.onerror = function() {
+                    this.onerror = null; 
+                    this.src = "img/immagine-non-trovata.jpeg"; 
+                    this.alt = "Immagine non disponibile";
+                };
+
+                imgElement.src = nomeFileImmagine;
+                imgElement.alt = "Immagine per il prodotto " + gtinRicevuto;
+                
+                // --- RECUPERO DATI DAL JSON ---
+                fetch('dati-libri.json')
+                    .then(response => {
+                        if (!response.ok) throw new Error("Errore nel caricamento del file JSON");
+                        return response.json();
+                    })
+                    .then(datiCatalogo => {
+                        const infoLibro = datiCatalogo[gtinRicevuto];
+
+                        if (infoLibro) {
+                            // Iniettiamo titolo e autore!
+                            titoloElement.textContent = infoLibro.titolo;
+                            autoreElement.textContent = infoLibro.autore;
+                        } else {
+                            // Se il GTIN non è nel JSON
+                            titoloElement.textContent = "Libro Sconosciuto";
+                            autoreElement.textContent = "Autore Ignoto";
+                        }
+                    })
+                    .catch(errore => {
+                        console.error("Errore di rete/lettura JSON:", errore);
+                        titoloElement.textContent = "Errore di caricamento";
+                        autoreElement.textContent = "---";
+                    });
+
+            } else {
+                // Se l'utente apre la pagina senza un GTIN nell'URL
+                imgElement.src = "img/immagine-non-trovata.jpeg";
+                imgElement.alt = "Nessun prodotto specificato";
+                titoloElement.textContent = "Nessun prodotto";
+                autoreElement.textContent = "Nessun autore";
+            }
+        });
+    </script>
 </head>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        
-        // 1. Estraiamo il GTIN dall'URL (es: ?gtin=12345678901234)
-        const parametriUrl = new URLSearchParams(window.location.search);
-        const gtinRicevuto = parametriUrl.get('gtin');
-
-        // 2. Troviamo l'elemento immagine nella pagina tramite il suo ID
-        const imgElement = document.getElementById("immagine-dinamica");
-
-        if (gtinRicevuto) {
-            
-            // 3. Costruiamo il nome del file basato sul GTIN
-            // ATTENZIONE: Assicurati che l'estensione qui sotto (.jpeg, .jpg o .png) 
-            // corrisponda esattamente a come salvi i file nella cartella!
-            const nomeFileImmagine = "img/" + gtinRicevuto + ".jpeg";
-
-            // 4. (Opzionale ma super consigliato) Gestione degli errori
-            // Se l'immagine per questo GTIN non esiste nella cartella, mostriamo un'immagine di default
-            // per evitare il problema del "doppio frame" vuoto di cui parlavamo prima.
-            imgElement.onerror = function() {
-                this.onerror = null; // Previene loop infiniti se anche l'immagine di default manca
-                this.src = "img/immagine-non-trovata.jpeg"; // Assicurati di avere questa immagine di scorta
-                this.alt = "Immagine non disponibile";
-            };
-
-            // 5. Applichiamo il nuovo percorso all'immagine
-            imgElement.src = nomeFileImmagine;
-            imgElement.alt = "Immagine per il prodotto " + gtinRicevuto;
-            
-        } else {
-            // Cosa succede se l'utente apre la pagina senza un GTIN nell'URL?
-            imgElement.src = "img/immagine-non-trovata.jpeg";
-            imgElement.alt = "Nessun prodotto specificato";
-        }
-    });
-</script>
 
 <body>
 
     <div class="container">
         <h1>Hai sbagliato!</h1>
 
-        <!-- Sostituire questo riquadro con l'immagine del libro -->
-		<img id="immagine-dinamica" src="caricamento.jpeg" class="book-cover">        <p>
+        <img id="immagine-dinamica" src="img/caricamento.jpeg" class="book-cover" alt="Attendere...">        
+        
+        <p>
             Il libro
-            <span class="book-title">"RFID Handbook"</span>
+            "<span class="book-title" id="testo-titolo">Attendere...</span>"
             di
-            <span class="author">Klaus Finkenzeller</span>
+            <span class="author" id="testo-autore">Attendere...</span>
             non può essere preso in prestito.
         </p>
     </div>
