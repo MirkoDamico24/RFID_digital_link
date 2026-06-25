@@ -1,2 +1,53 @@
-<! DOCTYPE html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elaborazione codice GS1...</title>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // 1. Cattura il percorso (es. "/01/12345678901234") e la query string (es. "?read_point=reg")
+            const path = window.location.pathname;
+            const queryString = window.location.search;
+            
+            // 2. Usa URLSearchParams per estrarre facilmente i valori dai parametri
+            const urlParams = new URLSearchParams(queryString);
+            const readPoint = urlParams.get('read_point'); // Restituirà 'reg', 'ck' oppure null se assente
 
+            // 3. Suddividi il percorso in un array per isolare il prefisso e il GTIN
+            const pathParts = path.split('/').filter(Boolean); 
+
+            // Verifica che sia un link GS1 valido (inizia con '01' e ha almeno 2 parti)
+            if (pathParts.length >= 2 && pathParts[0] === '01') {
+                const gtin = pathParts[1]; // Se ti serve, il GTIN è salvato in questa variabile
+
+                // 4. Logica di reindirizzamento basata sul parametro 'read_point'
+                if (readPoint === 'reg') {
+                    window.location.replace('/pagina-registered.html');
+                } 
+                else if (readPoint === 'ck') {
+                    window.location.replace('/hai-sbagliato.html');
+                } 
+                else {
+                    // FALLBACK: Gestione di casi in cui read_point manca o ha un valore imprevisto
+                    // Invece di bloccarsi, puoi mandarlo a una pagina di default o alla home
+                    window.location.replace('/pagina-default-prodotto.html'); 
+                }
+            } 
+            else {
+                // L'utente è finito in un 404 classico (es. domain.com/pagina-non-esistente)
+                // e non proviene da un GS1 Digital Link
+                window.location.replace('/errore-404-standard.html'); 
+            }
+        });
+    </script>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
+        <h2>Verifica in corso...</h2>
+        <p>Stiamo elaborando le informazioni. Attendi un istante.</p>
+    </div>
+</body>
+</html>

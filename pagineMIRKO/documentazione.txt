@@ -1,0 +1,19 @@
+quanbdo ho la fopto devo modificare con:
+<div class="book-cover">
+    <img src="rfid_handbook.jpg" alt="RFID Handbook"
+         style="width:100%; height:100%; object-fit:cover; border-radius:6px;">
+</div>
+
+e aggiungere in CSS questo:
+.book-cover {
+    width: 250px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 30px;
+}
+
+----------------------
+
+seconda pagina:
+

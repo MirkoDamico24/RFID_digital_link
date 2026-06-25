@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettagli della copia</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f5f5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .book-cover {
+            width: 250px;
+            height: 350px;
+            margin: 0 auto 40px auto;
+            border: 2px dashed #999;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fafafa;
+            color: #777;
+            font-size: 1rem;
+        }
+
+        .field {
+            margin-bottom: 25px;
+        }
+
+        .label {
+            display: block;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .value {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .status {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Informazioni della copia</h1>
+
+        <!-- Sostituire successivamente con la copertina del libro -->
+        <div class="book-cover">
+            Copertina del libro
+        </div>
+
+        <div class="field">
+            <span class="label">Titolo</span>
+            <div class="value">RFID Handbook</div>
+        </div>
+
+        <div class="field">
+            <span class="label">ISBN</span>
+            <div class="value">978-0470695067</div>
+        </div>
+
+        <div class="field">
+            <span class="label">EPC</span>
+            <div class="value">300833B2DDD9014000000001</div>
+        </div>
+
+        <div class="field">
+            <span class="label">Materiali</span>
+            <div class="value">
+                Libro cartaceo, copertina rigida, tag RFID UHF integrato
+            </div>
+        </div>
+
+        <div class="field">
+            <span class="label">Stato</span>
+            <div class="value status">
+                Registered
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
