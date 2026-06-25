@@ -8,38 +8,42 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             
-            // 1. Cattura il percorso (es. "/01/12345678901234") e la query string (es. "?read_point=reg")
             const path = window.location.pathname;
             const queryString = window.location.search;
-            
-            // 2. Usa URLSearchParams per estrarre facilmente i valori dai parametri
             const urlParams = new URLSearchParams(queryString);
-            const readPoint = urlParams.get('read_point'); // Restituirà 'reg', 'ck' oppure null se assente
+            const readPoint = urlParams.get('read_point');
 
-            // 3. Suddividi il percorso in un array per isolare il prefisso e il GTIN
-            const pathParts = path.split('/').filter(Boolean); 
+            // 1. Cerchiamo il separatore "/01/" che identifica l'inizio del GS1 Digital Link
+            const parts = path.split('/01/');
 
-            // Verifica che sia un link GS1 valido (inizia con '01' e ha almeno 2 parti)
-            if (pathParts.length >= 2 && pathParts[0] === '01') {
-                const gtin = pathParts[1]; // Se ti serve, il GTIN è salvato in questa variabile
+            // Se l'URL contiene "/01/", l'array "parts" sarà composto da 2 elementi:
+            // parts[0] = "/RFID_digital_link" (il percorso base)
+            // parts[1] = "12345678901234" (il GTIN ed eventuali pezzi successivi)
+            if (parts.length === 2) {
+                
+                const basePath = parts[0]; // Salviamo il percorso del repo per usarlo nei reindirizzamenti
+                
+                // Puliamo il GTIN da eventuali altri slash finali (es. se fosse /01/gtin/...)
+                const gtin = parts[1].split('/')[0]; 
 
-                // 4. Logica di reindirizzamento basata sul parametro 'read_point'
+                // 2. Logica di reindirizzamento (aggiungiamo basePath prima del nome del file!)
                 if (readPoint === 'reg') {
-                    window.location.replace('/pagina-registered.html');
+                    window.location.replace(basePath + '/pagina-registered.html');
                 } 
                 else if (readPoint === 'ck') {
-                    window.location.replace('/hai-sbagliato.html');
+                    window.location.replace(basePath + '/hai-sbagliato.html');
                 } 
                 else {
-                    // FALLBACK: Gestione di casi in cui read_point manca o ha un valore imprevisto
-                    // Invece di bloccarsi, puoi mandarlo a una pagina di default o alla home
-                    window.location.replace('/pagina-default-prodotto.html'); 
+                    window.location.replace(basePath + '/pagina-default.html'); 
                 }
             } 
             else {
-                // L'utente è finito in un 404 classico (es. domain.com/pagina-non-esistente)
-                // e non proviene da un GS1 Digital Link
-                window.location.replace('/errore-404-standard.html'); 
+                // Se nell'URL non c'è "/01/", non è un Digital Link valido.
+                // Reindirizziamo alla home del repository (o a una vera 404)
+                
+                // Ricaviamo la prima cartella per capire dove siamo, oppure rimandiamo alla radice
+                const repoBase = '/' + path.split('/')[1]; 
+                window.location.replace(repoBase + '/'); 
             }
         });
     </script>
