@@ -29,18 +29,16 @@
             color: #333;
         }
 
+        /* CSS della copertina sistemato per le immagini */
         .book-cover {
             width: 250px;
             height: 350px;
             margin: 0 auto 40px auto;
-            border: 2px dashed #999;
             border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block;
+            object-fit: cover; /* Evita deformazioni dell'immagine */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Leggera ombra per dare profondità */
             background-color: #fafafa;
-            color: #777;
-            font-size: 1rem;
         }
 
         .field {
@@ -65,28 +63,75 @@
             color: #2e7d32;
         }
     </style>
-</head>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        
-        // 1. Legge l'URL della pagina in cui ci troviamo
-        const parametriUrl = new URLSearchParams(window.location.search);
-        
-        // 2. Estrae il valore associato alla parola "gtin"
-        const gtinRicevuto = parametriUrl.get('gtin');
-
-        // 3. Verifica se il gtin è presente e fa qualcosa dinamicamente
-        if (gtinRicevuto) {
-            console.log("GTIN intercettato con successo:", gtinRicevuto);
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
             
-            // Esempio: Cambiare un testo nella pagina in base al GTIN
-            // document.getElementById("testo-dinamico").innerText = "Il codice prodotto è: " + gtinRicevuto;
-        } else {
-            console.log("Nessun GTIN trovato nell'URL.");
-        }
-    });
-</script>
+            // 1. Legge l'URL ed estrae il GTIN
+            const parametriUrl = new URLSearchParams(window.location.search);
+            const gtinRicevuto = parametriUrl.get('gtin');
+
+            // 2. Colleghiamo gli elementi HTML tramite i loro ID
+            const imgElement = document.getElementById("img-copertina");
+            const titoloElement = document.getElementById("testo-titolo");
+            const isbnElement = document.getElementById("testo-isbn");
+            const authElement = document.getElementById("autore");
+            const materialiElement = document.getElementById("testo-materiali");
+            const statoElement = document.getElementById("testo-stato");
+
+            if (gtinRicevuto) {
+                console.log("GTIN intercettato:", gtinRicevuto);
+
+                // --- GESTIONE IMMAGINE ---
+                imgElement.onerror = function() {
+                    this.onerror = null; 
+                    this.src = "img/immagine-non-trovata.jpeg"; // Fallback se manca la foto
+                };
+                imgElement.src = "img/" + gtinRicevuto + ".jpeg";
+
+                // --- RECUPERO DATI DAL JSON ---
+                fetch('dati-libri.json')
+                    .then(response => {
+                        if (!response.ok) throw new Error("Errore nel caricamento del file JSON");
+                        return response.json();
+                    })
+                    .then(datiCatalogo => {
+                        const infoLibro = datiCatalogo[gtinRicevuto];
+
+                        if (infoLibro) {
+                            // Iniettiamo i dati nella pagina HTML
+                            titoloElement.textContent = infoLibro.titolo;
+                            isbnElement.textContent = infoLibro.isbn;
+                            authElement.textContent = infoLibro.autore;
+                            materialiElement.textContent = infoLibro.materiali;
+                            statoElement.textContent = infoLibro.stato;
+                        } else {
+                            // Se il GTIN non è nel JSON
+                            titoloElement.textContent = "Prodotto non trovato nel database";
+                            isbnElement.textContent = "-";
+                            authElement.textContent = "-";
+                            materialiElement.textContent = "-";
+                            statoElement.textContent = "Sconosciuto";
+                            statoElement.style.color = "#c62828"; // Diventa rosso
+                        }
+                    })
+                    .catch(errore => {
+                        console.error("Errore:", errore);
+                        titoloElement.textContent = "Errore di connessione al catalogo";
+                    });
+
+            } else {
+                // Se non c'è il GTIN nell'URL
+                imgElement.src = "img/immagine-non-trovata.jpeg";
+                titoloElement.textContent = "Nessun prodotto specificato";
+                isbnElement.textContent = "";
+                authElement.textContent = "";
+                materialiElement.textContent = "";
+                statoElement.textContent = "";
+            }
+        });
+    </script>
+</head>
 
 <body>
 
@@ -94,38 +139,31 @@
 
         <h1>Informazioni della copia</h1>
 
-        <!-- Sostituire successivamente con la copertina del libro -->
-        <div class="book-cover">
-            Copertina del libro
-        </div>
+        <img id="img-copertina" src="img/caricamento.jpeg" class="book-cover" alt="Copertina del libro">
 
         <div class="field">
             <span class="label">Titolo</span>
-            <div class="value">RFID Handbook</div>
+            <div class="value" id="testo-titolo">Caricamento in corso...</div>
         </div>
+
+		<div class="field">
+			<span class="label">Autore<\span>
+			<div class="value" id="autore">Attendere...<\div>
+		<\div>
 
         <div class="field">
             <span class="label">ISBN</span>
-            <div class="value">978-0470695067</div>
-        </div>
-
-        <div class="field">
-            <span class="label">EPC</span>
-            <div class="value">300833B2DDD9014000000001</div>
+            <div class="value" id="testo-isbn">Attendere...</div>
         </div>
 
         <div class="field">
             <span class="label">Materiali</span>
-            <div class="value">
-                Libro cartaceo, copertina rigida, tag RFID UHF integrato
-            </div>
+            <div class="value" id="testo-materiali">Attendere...</div>
         </div>
 
         <div class="field">
             <span class="label">Stato</span>
-            <div class="value status">
-                Registered
-            </div>
+            <div class="value status" id="testo-stato">Attendere...</div>
         </div>
 
     </div>
