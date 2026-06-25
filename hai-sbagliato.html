@@ -30,20 +30,23 @@
             margin-bottom: 30px;
         }
 
-        .book-cover {
-            width: 250px;
-            height: 350px;
-            margin: 0 auto 30px auto;
-            border: 2px dashed #999;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #fafafa;
-            color: #777;
-            font-size: 1rem;
-        }
-
+	.book-cover {
+		 width: 250px;
+		height: 350px;
+		margin: 0 auto 30px auto;
+    
+		/* Le regole fondamentali per l'immagine */
+		display: block; 
+		object-fit: cover; /* Fa sì che l'immagine riempia il riquadro 250x350 senza deformarsi */
+		border-radius: 6px; /* Mantiene gli angoli leggermente arrotondati */
+    
+		/* Assicuriamoci che non ci siano bordi o sfondi indesiderati */
+		border: none; 
+		background-color: transparent;
+    
+		/* Opzionale: aggiunge un'ombra elegante al libro invece del vecchio bordo */
+		box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+	}
         p {
             font-size: 1.3rem;
             line-height: 1.6;
