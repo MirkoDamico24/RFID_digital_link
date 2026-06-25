@@ -66,6 +66,28 @@
         }
     </style>
 </head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // 1. Legge l'URL della pagina in cui ci troviamo
+        const parametriUrl = new URLSearchParams(window.location.search);
+        
+        // 2. Estrae il valore associato alla parola "gtin"
+        const gtinRicevuto = parametriUrl.get('gtin');
+
+        // 3. Verifica se il gtin è presente e fa qualcosa dinamicamente
+        if (gtinRicevuto) {
+            console.log("GTIN intercettato con successo:", gtinRicevuto);
+            
+            // Esempio: Cambiare un testo nella pagina in base al GTIN
+            // document.getElementById("testo-dinamico").innerText = "Il codice prodotto è: " + gtinRicevuto;
+        } else {
+            console.log("Nessun GTIN trovato nell'URL.");
+        }
+    });
+</script>
+
 <body>
 
     <div class="container">

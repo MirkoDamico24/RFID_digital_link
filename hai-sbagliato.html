@@ -61,14 +61,52 @@
         }
     </style>
 </head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // 1. Estraiamo il GTIN dall'URL (es: ?gtin=12345678901234)
+        const parametriUrl = new URLSearchParams(window.location.search);
+        const gtinRicevuto = parametriUrl.get('gtin');
+
+        // 2. Troviamo l'elemento immagine nella pagina tramite il suo ID
+        const imgElement = document.getElementById("immagine-dinamica");
+
+        if (gtinRicevuto) {
+            
+            // 3. Costruiamo il nome del file basato sul GTIN
+            // ATTENZIONE: Assicurati che l'estensione qui sotto (.jpeg, .jpg o .png) 
+            // corrisponda esattamente a come salvi i file nella cartella!
+            const nomeFileImmagine = gtinRicevuto + ".jpeg";
+
+            // 4. (Opzionale ma super consigliato) Gestione degli errori
+            // Se l'immagine per questo GTIN non esiste nella cartella, mostriamo un'immagine di default
+            // per evitare il problema del "doppio frame" vuoto di cui parlavamo prima.
+            imgElement.onerror = function() {
+                this.onerror = null; // Previene loop infiniti se anche l'immagine di default manca
+                this.src = "/img/immagine-non-trovata.jpeg"; // Assicurati di avere questa immagine di scorta
+                this.alt = "Immagine non disponibile";
+            };
+
+            // 5. Applichiamo il nuovo percorso all'immagine
+            imgElement.src = nomeFileImmagine;
+            imgElement.alt = "Immagine per il prodotto " + gtinRicevuto;
+            
+        } else {
+            // Cosa succede se l'utente apre la pagina senza un GTIN nell'URL?
+            imgElement.src = "/img/immagine-non-trovata.jpeg";
+            imgElement.alt = "Nessun prodotto specificato";
+        }
+    });
+</script>
+
 <body>
 
     <div class="container">
         <h1>Hai sbagliato!</h1>
 
         <!-- Sostituire questo riquadro con l'immagine del libro -->
-		<img src="copertina_libro.jpeg" class="book-cover">
-        <p>
+		<img id="immagine-dinamica" src="caricamento.jpeg" class="book-cover">        <p>
             Il libro
             <span class="book-title">"RFID Handbook"</span>
             di

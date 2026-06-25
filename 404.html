@@ -13,35 +13,31 @@
             const urlParams = new URLSearchParams(queryString);
             const readPoint = urlParams.get('read_point');
 
-            // 1. Cerchiamo il separatore "/01/" che identifica l'inizio del GS1 Digital Link
             const parts = path.split('/01/');
 
-            // Se l'URL contiene "/01/", l'array "parts" sarà composto da 2 elementi:
-            // parts[0] = "/RFID_digital_link" (il percorso base)
-            // parts[1] = "12345678901234" (il GTIN ed eventuali pezzi successivi)
             if (parts.length === 2) {
                 
-                const basePath = parts[0]; // Salviamo il percorso del repo per usarlo nei reindirizzamenti
+                const basePath = parts[0]; 
                 
-                // Puliamo il GTIN da eventuali altri slash finali (es. se fosse /01/gtin/...)
+                // Estraiamo il GTIN
                 const gtin = parts[1].split('/')[0]; 
 
-                // 2. Logica di reindirizzamento (aggiungiamo basePath prima del nome del file!)
+                // Prepariamo il parametro da aggiungere all'URL
+                // Usiamo encodeURIComponent per assicurarci che il valore sia formattato correttamente per gli URL
+                const queryGtin = "?gtin=" + encodeURIComponent(gtin);
+
+                // Logica di reindirizzamento: aggiungiamo queryGtin alla fine del file
                 if (readPoint === 'reg') {
-                    window.location.replace(basePath + '/pagina-registered.html');
+                    window.location.replace(basePath + '/pagina-registered.html' + queryGtin);
                 } 
                 else if (readPoint === 'ck') {
-                    window.location.replace(basePath + '/hai-sbagliato.html');
+                    window.location.replace(basePath + '/hai-sbagliato.html' + queryGtin);
                 } 
                 else {
-                    window.location.replace(basePath + '/pagina-default.html'); 
+                    window.location.replace(basePath + '/pagina-default.html' + queryGtin); 
                 }
             } 
             else {
-                // Se nell'URL non c'è "/01/", non è un Digital Link valido.
-                // Reindirizziamo alla home del repository (o a una vera 404)
-                
-                // Ricaviamo la prima cartella per capire dove siamo, oppure rimandiamo alla radice
                 const repoBase = '/' + path.split('/')[1]; 
                 window.location.replace(repoBase + '/'); 
             }
