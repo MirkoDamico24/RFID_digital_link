@@ -77,14 +77,14 @@
             // 3. Costruiamo il nome del file basato sul GTIN
             // ATTENZIONE: Assicurati che l'estensione qui sotto (.jpeg, .jpg o .png) 
             // corrisponda esattamente a come salvi i file nella cartella!
-            const nomeFileImmagine = "/img/" + gtinRicevuto + ".jpeg";
+            const nomeFileImmagine = "img/" + gtinRicevuto + ".jpeg";
 
             // 4. (Opzionale ma super consigliato) Gestione degli errori
             // Se l'immagine per questo GTIN non esiste nella cartella, mostriamo un'immagine di default
             // per evitare il problema del "doppio frame" vuoto di cui parlavamo prima.
             imgElement.onerror = function() {
                 this.onerror = null; // Previene loop infiniti se anche l'immagine di default manca
-                this.src = "/img/immagine-non-trovata.jpeg"; // Assicurati di avere questa immagine di scorta
+                this.src = "img/immagine-non-trovata.jpeg"; // Assicurati di avere questa immagine di scorta
                 this.alt = "Immagine non disponibile";
             };
 
@@ -94,7 +94,7 @@
             
         } else {
             // Cosa succede se l'utente apre la pagina senza un GTIN nell'URL?
-            imgElement.src = "/img/immagine-non-trovata.jpeg";
+            imgElement.src = "img/immagine-non-trovata.jpeg";
             imgElement.alt = "Nessun prodotto specificato";
         }
     });
